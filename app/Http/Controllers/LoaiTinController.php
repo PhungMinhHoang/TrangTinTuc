@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\LoaiTin;
 use App\TheLoai;
 
-class TheLoaiController extends Controller
+class LoaiTinController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,8 +16,8 @@ class TheLoaiController extends Controller
     public function index()
     {
         //
-        $theloai = TheLoai::all();
-        return view('admin.theloai.danhsach',['theloai'=>$theloai]);
+        $loaitin = LoaiTin::all();
+        return view('admin.loaitin.danhsach',['loaitin'=>$loaitin]);
     }
 
     /**
@@ -27,7 +28,8 @@ class TheLoaiController extends Controller
     public function create()
     {
         //
-        return view('admin.theloai.them');
+        $theloai = TheLoai::all();
+        return view('admin.loaitin.them',['theloai'=>$theloai]);
     }
 
     /**
@@ -41,20 +43,25 @@ class TheLoaiController extends Controller
     {
         $this->validate($request,
         [
-            'Ten' => 'required|unique:TheLoai,Ten|min:3|max:100'
+            'Ten' => 'required|unique:loaitin,Ten|min:3|max:100',
+            'TheLoai' => 'required'
         ],
         [   
             'Ten.required' => 'Bạn chưa nhập tên thể loại',
+            'Ten.unique' => 'Tên loại tin đã tồn tại',
             'Ten.min' => 'Tên thể loại phải có độ dài từ 3 đến 100 ký tự',
             'Ten.max' => 'Tên thể loại phải có độ dài từ 3 đến 100 ký tự',
+
+            'TheLoai.required' => 'Bạn chưa chọn thể loại',
         ]);
 
-        $theloai = new TheLoai();
-        $theloai->Ten = $request->Ten;
-        $theloai->TenKhongDau = changeTitle($request->Ten);
-        $theloai->save();
+        $loaitin = new LoaiTin();
+        $loaitin->Ten = $request->Ten;
+        $loaitin->TenKhongDau = changeTitle($request->Ten);
+        $loaitin->idTheLoai = $request->TheLoai;
+        $loaitin->save();
 
-        return redirect('admin/theloai/them')->with('thongbao','Thêm thành công');
+        return redirect('admin/loaitin/them')->with('thongbao','Thêm thành công');
 
     }
     /**
@@ -75,10 +82,11 @@ class TheLoaiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(TheLoai $theloai)
+    public function edit(LoaiTin $loaitin)
     {
         //
-        return view('admin.theloai.sua',['theloai'=>$theloai]);
+        $theloai = TheLoai::all();
+        return view('admin.loaitin.sua',['loaitin'=>$loaitin,'theloai'=>$theloai]);
     }
 
     /**
@@ -88,23 +96,27 @@ class TheLoaiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(TheLoai $theloai,Request $request)
+    public function update(LoaiTin $loaitin,Request $request)
     {
         //
         $this->validate($request,
         [
-            'Ten' => 'required|unique:TheLoai,Ten|min:3|max:100'
+            'Ten' => 'required|unique:loaitin,Ten|min:3|max:100',
+            'TheLoai' => 'required'
         ],
-        [
+        [   
             'Ten.required' => 'Bạn chưa nhập tên thể loại',
-            'Ten.unique' => 'Thể loại đã tồn tại',
+            'Ten.unique' => 'Tên loại tin đã tồn tại',
             'Ten.min' => 'Tên thể loại phải có độ dài từ 3 đến 100 ký tự',
             'Ten.max' => 'Tên thể loại phải có độ dài từ 3 đến 100 ký tự',
+
+            'TheLoai.required' => 'Bạn chưa chọn thể loại',
         ]);
-        $theloai->Ten = $request->Ten;
-        $theloai->TenKhongDau = changeTitle($request->Ten);
-        $theloai->save();
-        return redirect('admin/theloai/sua/'.$theloai->id)->with('thongbao','Sửa thành công');
+        $loaitin->Ten = $request->Ten;
+        $loaitin->TenKhongDau = changeTitle($request->Ten);
+        $loaitin->idTheLoai = $request->TheLoai;
+        $loaitin->save();
+        return redirect('admin/loaitin/sua/'.$loaitin->id)->with('thongbao','Sửa thành công');
     }
 
     /**
@@ -113,11 +125,10 @@ class TheLoaiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(TheLoai $theloai)
+    public function destroy(LoaiTin $loaitin)
     {
         //
-        $theloai->delete();
-
-        return redirect('admin/theloai/danhsach')->with('thongbao','Bạn đã xóa thành công');
+        $loaitin->delete();
+        return redirect('admin/loaitin/danhsach')->with('thongbao','Bạn đã xóa thành công');
     }
 }
