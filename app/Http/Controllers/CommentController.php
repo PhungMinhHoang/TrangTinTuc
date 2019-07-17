@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Comment;
 use App\TinTuc;
+use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
@@ -34,9 +35,15 @@ class CommentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request,TinTuc $tintuc)
     {
-        //
+        $comment = new Comment;
+        $comment->idTinTuc = $tintuc->id;
+        $comment->idUser = Auth::user()->id;
+        $comment->NoiDung = $request->NoiDung;
+        $comment->save();
+
+        return redirect("tintuc/$tintuc->id/$tintuc->TieuDeKhongDau")->with('thongbao','Viết bình luận thành công');
     }
 
     /**

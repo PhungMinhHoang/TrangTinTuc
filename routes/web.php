@@ -10,7 +10,6 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-use App\TheLoai;
 
 Route::get('/', function () {
     return view('welcome');
@@ -94,3 +93,24 @@ Route::group(['prefix' => 'admin','middleware'=>'adminLogin'],function(){
         Route::get('loaitin/{idTheLoai}','AjaxConTroller@getLoaiTin');
     });
 });
+
+
+
+Route::get('trangchu','PagesController@trangchu');
+Route::get('lienhe','PagesController@lienhe');
+Route::get('loaitin/{loaitin}/{TenKhongDau}','PagesController@loaitin');
+Route::get('tintuc/{tintuc}/{TieuDeKhongDau}','PagesController@tintuc');
+
+Route::get('dangnhap','PagesController@getDangNhap');
+Route::post('dangnhap','PagesController@postDangNhap');
+Route::get('dangxuat','PagesController@getDangXuat');
+Route::get('nguoidung','PagesController@getNguoiDung');
+Route::post('nguoidung','PagesController@postNguoiDung');
+Route::get('dangky','PagesController@getDangKy');
+Route::post('dangky','PagesController@postDangKy');
+
+
+Route::post('comment/{tintuc}','CommentController@store');
+Route::get('timkiem','PagesController@timkiem');
+
+
